@@ -22,15 +22,30 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     throw new Error('PUBLIC_STORE_DOMAIN environment variable is not set');
   }
 
-  const clientId = env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  // Try multiple possible client ID env variables (Oxygen vs local)
+  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
   if (!clientId) {
     throw new Error(
       'CUSTOMER_ACCOUNT_CLIENT_ID environment variable is not set',
     );
   }
 
+  // Get SHOP_ID from env or extract from PUBLIC_CUSTOMER_ACCOUNT_API_URL
+  let shopId: string | undefined = env.SHOP_ID;
+  if (!shopId && env.PUBLIC_CUSTOMER_ACCOUNT_API_URL) {
+    // Extract shop ID from URL like: https://shopify.com/91454472574
+    const match = env.PUBLIC_CUSTOMER_ACCOUNT_API_URL.match(/\/(\d+)$/);
+    if (match && match[1]) {
+      shopId = match[1];
+    }
+  }
+
+  if (!shopId) {
+    throw new Error('SHOP_ID could not be determined from environment variables');
+  }
+
   // Use direct authorization endpoint (bypassing discovery for now)
-  const authorizationEndpoint = `https://shopify.com/authentication/${env.SHOP_ID}/oauth/authorize`;
+  const authorizationEndpoint = `https://shopify.com/authentication/${shopId}/oauth/authorize`;
 
   // Generate PKCE parameters
   const codeVerifier = await generateCodeVerifier();

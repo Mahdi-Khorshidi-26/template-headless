@@ -47,15 +47,28 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   // Get environment variables
   const shopDomain = env.PUBLIC_STORE_DOMAIN;
-  const clientId = env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
 
   if (!shopDomain || !clientId) {
     throw new Error('Required environment variables not set');
   }
 
+  // Get SHOP_ID from env or extract from PUBLIC_CUSTOMER_ACCOUNT_API_URL
+  let shopId: string | undefined = env.SHOP_ID;
+  if (!shopId && env.PUBLIC_CUSTOMER_ACCOUNT_API_URL) {
+    const match = env.PUBLIC_CUSTOMER_ACCOUNT_API_URL.match(/\/(\d+)$/);
+    if (match && match[1]) {
+      shopId = match[1];
+    }
+  }
+
+  if (!shopId) {
+    throw new Error('SHOP_ID could not be determined from environment variables');
+  }
+
   try {
     // Use direct token endpoint (bypassing discovery)
-    const tokenEndpoint = `https://shopify.com/authentication/${env.SHOP_ID}/oauth/token`;
+    const tokenEndpoint = `https://shopify.com/authentication/${shopId}/oauth/token`;
 
     // Build redirect URI
     const redirectUri = `${url.origin}/account/authorize/callback`;
