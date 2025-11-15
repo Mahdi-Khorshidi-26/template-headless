@@ -47,7 +47,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   // Get environment variables
   const shopDomain = env.PUBLIC_STORE_DOMAIN;
-  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  const clientId =
+    env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
 
   if (!shopDomain || !clientId) {
     throw new Error('Required environment variables not set');
@@ -63,7 +64,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   }
 
   if (!shopId) {
-    throw new Error('SHOP_ID could not be determined from environment variables');
+    throw new Error(
+      'SHOP_ID could not be determined from environment variables',
+    );
   }
 
   try {

@@ -23,7 +23,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   }
 
   // Try multiple possible client ID env variables (Oxygen vs local)
-  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  const clientId =
+    env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
   if (!clientId) {
     throw new Error(
       'CUSTOMER_ACCOUNT_CLIENT_ID environment variable is not set',
@@ -41,7 +42,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   }
 
   if (!shopId) {
-    throw new Error('SHOP_ID could not be determined from environment variables');
+    throw new Error(
+      'SHOP_ID could not be determined from environment variables',
+    );
   }
 
   // Use direct authorization endpoint (bypassing discovery for now)

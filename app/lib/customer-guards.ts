@@ -43,7 +43,8 @@ export async function getAuthenticatedToken(
   const {session, env} = args.context;
 
   const shopDomain = env.PUBLIC_STORE_DOMAIN;
-  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  const clientId =
+    env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
 
   if (!shopDomain || !clientId) {
     throw new Error(
@@ -83,7 +84,8 @@ export async function optionalAuth(
   const {session, env} = args.context;
 
   const shopDomain = env.PUBLIC_STORE_DOMAIN;
-  const clientId = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
+  const clientId =
+    env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || env.CUSTOMER_ACCOUNT_CLIENT_ID;
 
   if (!shopDomain || !clientId) {
     return null;
